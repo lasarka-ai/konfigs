@@ -1,6 +1,7 @@
 import pytest
 from commands.user_commands import WhoCommand, WhoamiCommand
 from utils.logger import Logger
+import os
 
 class TestWhoCommand:
     @pytest.fixture

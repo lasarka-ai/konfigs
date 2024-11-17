@@ -1,0 +1,22 @@
+[
+  {
+    "timestamp": "2024-11-18T01:45:43.391946",
+    "command": "cd /home/user/"
+  },
+  {
+    "timestamp": "2024-11-18T01:45:43.393944",
+    "command": "ls"
+  },
+  {
+    "timestamp": "2024-11-18T01:45:43.394944",
+    "command": "whoami"
+  },
+  {
+    "timestamp": "2024-11-18T01:45:43.395942",
+    "command": "who"
+  },
+  {
+    "timestamp": "2024-11-18T01:45:43.397941",
+    "command": "uniq"
+  }
+]

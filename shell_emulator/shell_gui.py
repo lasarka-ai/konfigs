@@ -49,20 +49,28 @@ class ShellGUI(QMainWindow):
         self.show_prompt()
     
     def show_prompt(self):
-        self.output_area.append(f'{self.hostname}:~$ ')
+        current_dir = self.fs.get_current_directory()
+        self.output_area.append(f'{self.hostname}:{current_dir}$ ')
     
     def process_command(self):
         command = self.input_line.text().strip()
         self.input_line.clear()
         
         if command:
-            self.output_area.append(command)
+            # Добавляем команду в вывод
+            current_text = self.output_area.toPlainText()
+            self.output_area.setText(current_text + command + '\n')
+            
             self.logger.log_command(command)
             
             parts = command.split()
             cmd_name = parts[0]
-            args = parts[1:]
+            args = parts[1:] if len(parts) > 1 else []
             
+            if cmd_name == 'exit':
+                self.close()
+                return
+                
             if cmd_name in self.commands:
                 try:
                     output = self.commands[cmd_name].execute(args)
@@ -87,6 +95,6 @@ class ShellGUI(QMainWindow):
                     self.process_command()
         except Exception as e:
             self.output_area.append(f'Error executing startup script: {str(e)}')
-    
+
     def run(self):
         self.show()

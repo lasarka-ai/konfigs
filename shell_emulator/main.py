@@ -1,5 +1,6 @@
 import argparse
 import sys
+sys.path.append('./C:\Users\User\Desktop\konfigDesk\shell_emulator\utils')
 from shell_gui import ShellGUI
 from utils.file_system import VirtualFileSystem
 from utils.logger import Logger

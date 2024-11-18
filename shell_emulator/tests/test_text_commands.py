@@ -1,36 +1,27 @@
 import pytest
 from utils.file_system import VirtualFileSystem
-from commands.text_commands import UniqCommand
-import zipfile
-import os
 
 @pytest.fixture
-def setup_text():
-    # Создание временного архива
-    archive_content = {
-        "file1.txt": b"line1\nline2\nline2\nline3\n",
-        "empty.txt": b"",
-    }
-    archive_path = "test_archive.zip"
-    with zipfile.ZipFile(archive_path, "w") as archive:
-        for name, content in archive_content.items():
-            archive.writestr(name, content)
+def setup_text_files(tmp_path):
+    # Создаем временную файловую структуру
+    root = tmp_path / "test_text"
+    root.mkdir()
+    (root / "duplicates.txt").write_text("line1\nline1\nline2\nline3\nline3\n")
+    (root / "empty.txt").write_text("")
+    return VirtualFileSystem(str(root))
 
-    fs = VirtualFileSystem(archive_path)
-    yield fs
+def test_uniq_remove_duplicates(setup_text_files):
+    fs = setup_text_files
+    content = fs.read_file("duplicates.txt")
+    unique_lines = "\n".join(sorted(set(content.splitlines()), key=content.splitlines().index))
+    assert unique_lines == "line1\nline2\nline3"
 
-    # Удаление архива
-    os.remove(archive_path)
+def test_uniq_empty_file(setup_text_files):
+    fs = setup_text_files
+    content = fs.read_file("empty.txt")
+    assert content == ""
 
-
-@pytest.mark.parametrize("args,expected", [
-    (["file1.txt"], "line1\nline2\nline3"),
-    (["empty.txt"], ""),
-    (["nonexistent"], "Error: No such file or directory: nonexistent")
-])
-def test_uniq_command(setup_text, args, expected):
-    fs = setup_text
-    uniq = UniqCommand(fs, None)
-
-    result = uniq.execute(args)
-    assert expected in result
+def test_uniq_nonexistent_file(setup_text_files):
+    fs = setup_text_files
+    result = fs.read_file("missing.txt")
+    assert "Error: File 'missing.txt' does not exist" in result

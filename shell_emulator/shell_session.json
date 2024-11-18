@@ -1,22 +1,42 @@
 [
   {
-    "timestamp": "2024-11-18T01:45:43.391946",
-    "command": "cd /home/user/"
+    "timestamp": "2024-11-18T03:38:41.550054",
+    "command": "cd /home"
   },
   {
-    "timestamp": "2024-11-18T01:45:43.393944",
+    "timestamp": "2024-11-18T03:38:41.555865",
+    "command": "cd user"
+  },
+  {
+    "timestamp": "2024-11-18T03:38:41.559867",
+    "command": "cd nonexistent_dir"
+  },
+  {
+    "timestamp": "2024-11-18T03:38:41.564864",
     "command": "ls"
   },
   {
-    "timestamp": "2024-11-18T01:45:43.394944",
+    "timestamp": "2024-11-18T03:38:41.568861",
+    "command": "ls documents"
+  },
+  {
+    "timestamp": "2024-11-18T03:38:41.571858",
+    "command": "ls nonexistent_dir"
+  },
+  {
+    "timestamp": "2024-11-18T03:38:41.576855",
     "command": "whoami"
   },
   {
-    "timestamp": "2024-11-18T01:45:43.395942",
+    "timestamp": "2024-11-18T03:38:41.577855",
     "command": "who"
   },
   {
-    "timestamp": "2024-11-18T01:45:43.397941",
-    "command": "uniq"
+    "timestamp": "2024-11-18T03:38:41.579855",
+    "command": "uniq documents/test.txt"
+  },
+  {
+    "timestamp": "2024-11-18T03:38:41.580854",
+    "command": "uniq nonexistent_file.txt"
   }
 ]

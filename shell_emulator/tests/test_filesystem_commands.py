@@ -1,29 +1,53 @@
 import pytest
-import os
 from utils.file_system import VirtualFileSystem
+from zipfile import ZipFile
+
 
 @pytest.fixture
-def setup_filesystem(tmp_path):
-    # Создаём временную файловую структуру
-    root = tmp_path / "test_fs"
-    root.mkdir()
-    (root / "dir1").mkdir()
-    (root / "dir1" / "file1.txt").write_text("content")
-    (root / "file2.txt").write_text("example")
-    return VirtualFileSystem(str(root))
+def setup_virtual_fs(tmp_path):
+    """
+    Создаёт экземпляр VirtualFileSystem с тестовым архивом.
+    """
+    # Создаём временный zip-архив для тестов
+    archive_path = tmp_path / "test_archive.zip"
 
-def test_ls_root_directory(setup_filesystem):
-    fs = setup_filesystem
-    result = fs.list_directory("/")
-    assert "dir1" in result
-    assert "file2.txt" in result
+    # Инициализация содержимого архива
+    with ZipFile(archive_path, "w") as archive:
+        archive.writestr("documents/test.txt", "Hello\nWorld\nTest")
+        archive.writestr("downloads/", "")
 
-def test_ls_subdirectory(setup_filesystem):
-    fs = setup_filesystem
-    result = fs.list_directory("dir1")
-    assert "file1.txt" in result
+    # Диагностика содержимого архива
+    with ZipFile(archive_path, "r") as archive:
+        print("Archive contents:", archive.namelist())
 
-def test_ls_nonexistent_directory(setup_filesystem):
-    fs = setup_filesystem
-    result = fs.list_directory("nonexistent")
-    assert "Error: Directory 'nonexistent' does not exist" in result
+    vfs = VirtualFileSystem(str(archive_path))
+    vfs.current_dir = "/"  # Устанавливаем текущую директорию на корень
+    return vfs
+
+
+def test_ls_root_directory(setup_virtual_fs):
+    """
+    Тест команды `list_directory` для корневого каталога.
+    """
+    vfs = setup_virtual_fs
+    result = vfs.list_directory("/")
+    assert result == ["documents", "downloads"], f"Unexpected root contents: {result}"
+
+
+def test_ls_subdirectory(setup_virtual_fs):
+    """
+    Тест команды `list_directory` для существующего подкаталога.
+    """
+    vfs = setup_virtual_fs
+    vfs.change_directory("/documents")
+    result = vfs.list_directory()
+    assert result == ["test.txt"], f"Unexpected documents contents: {result}"
+
+
+def test_ls_nonexistent_directory(setup_virtual_fs):
+    """
+    Тест команды `change_directory` для несуществующего каталога.
+    """
+    vfs = setup_virtual_fs
+    with pytest.raises(Exception, match="No such directory"):
+        vfs.change_directory("/nonexistent_dir")

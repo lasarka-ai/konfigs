@@ -4,16 +4,16 @@ from io import BytesIO
 
 class VirtualFileSystem:
     def __init__(self, archive_path):
-        self.archive_path = archive_path
-        self.current_dir = '/'
-        self.zip_file = zipfile.ZipFile(archive_path)
+        if os.path.isdir(archive_path):  # Проверяем, папка это или файл
+            self.root_path = archive_path
+            self.zip_file = None
+        elif os.path.isfile(archive_path):  # Если это файл, открываем как ZIP
+            self.zip_file = zipfile.ZipFile(archive_path)
+            self.root_path = None
+        else:
+            raise ValueError(f"{archive_path} не является ни папкой, ни архивом.")
 
-        # Отладка: вывод содержимого архива
-        print("Archive content:", self.zip_file.namelist())
 
-        print("Archive content:")
-        for name in self.zip_file.namelist():
-            print(name)
     
     def list_directory(self, path='.'):
         # Если путь относительный, объединяем с текущей директорией
@@ -29,23 +29,22 @@ class VirtualFileSystem:
         if not normalized_path.endswith('/'):
             normalized_path += '/'
 
-        # Логируем текущий путь и список архивных путей
-        print(f"Attempting to list directory: {normalized_path}")
-        print("Current archive paths:")
-        for archive_path in self.zip_file.namelist():
-            print(f" - {archive_path}")
+        # Логируем текущий путь
+        print(f"Listing directory: {normalized_path}")
 
-        # Собираем список файлов и папок в указанной директории
+        # Проверяем, есть ли файлы/папки в указанном пути
         items = []
-        for name in self.zip_file.namelist():
-            if name.startswith(normalized_path) and name != normalized_path:
-                # Получаем относительный путь
-                relative_path = name[len(normalized_path):]
-                # Проверяем, является ли элемент файлом или папкой
-                if '/' not in relative_path or relative_path.endswith('/'):
-                    items.append(relative_path.rstrip('/'))
+        if self.zip_file:
+            for name in self.zip_file.namelist():
+                if name.startswith(normalized_path) and name != normalized_path:
+                    # Получаем относительный путь
+                    relative_path = name[len(normalized_path):]
+                    # Проверяем, является ли элемент файлом или папкой
+                    if '/' not in relative_path or relative_path.endswith('/'):
+                        items.append(relative_path.rstrip('/'))
 
         return sorted(items)
+
 
     
     def change_directory(self, path):
@@ -81,10 +80,6 @@ class VirtualFileSystem:
         # Обновляем текущую директорию
         self.current_dir = normalized_path
         print(f"Changed directory to: {self.current_dir}")
-
-
-
-
 
 
     

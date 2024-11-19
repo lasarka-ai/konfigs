@@ -1,42 +1,42 @@
 [
   {
-    "timestamp": "2024-11-18T15:59:16.035716",
+    "timestamp": "2024-11-19T20:05:22.100225",
     "command": "cd /home"
   },
   {
-    "timestamp": "2024-11-18T15:59:16.041718",
+    "timestamp": "2024-11-19T20:05:22.106197",
     "command": "cd user"
   },
   {
-    "timestamp": "2024-11-18T15:59:16.048140",
+    "timestamp": "2024-11-19T20:05:22.110203",
     "command": "cd nonexistent_dir"
   },
   {
-    "timestamp": "2024-11-18T15:59:16.053137",
+    "timestamp": "2024-11-19T20:05:22.115200",
     "command": "ls"
   },
   {
-    "timestamp": "2024-11-18T15:59:16.057136",
+    "timestamp": "2024-11-19T20:05:22.117199",
     "command": "ls documents"
   },
   {
-    "timestamp": "2024-11-18T15:59:16.060134",
+    "timestamp": "2024-11-19T20:05:22.119199",
     "command": "ls nonexistent_dir"
   },
   {
-    "timestamp": "2024-11-18T15:59:16.062132",
+    "timestamp": "2024-11-19T20:05:22.121197",
     "command": "whoami"
   },
   {
-    "timestamp": "2024-11-18T15:59:16.065131",
+    "timestamp": "2024-11-19T20:05:22.122197",
     "command": "who"
   },
   {
-    "timestamp": "2024-11-18T15:59:16.072125",
+    "timestamp": "2024-11-19T20:05:22.124195",
     "command": "uniq documents/test.txt"
   },
   {
-    "timestamp": "2024-11-18T15:59:16.074125",
+    "timestamp": "2024-11-19T20:05:22.126194",
     "command": "uniq nonexistent_file.txt"
   }
 ]

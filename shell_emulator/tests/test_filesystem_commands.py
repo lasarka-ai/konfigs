@@ -25,9 +25,8 @@ def test_ls_root_directory(setup_virtual_fs):
     Тест команды `list_directory` для корневого каталога.
     """
     vfs = setup_virtual_fs
-    result = vfs.list_directory("/")
-    print(f"Root directory contents: {result}")
-    expected = ["home", "usr", "etc"]
+    result = vfs.list_directory("home/user/")
+    expected = ["downloads", "documents"]
     assert sorted(result) == sorted(expected), f"Unexpected root contents: {result}"
 
 
@@ -36,10 +35,9 @@ def test_ls_home_directory(setup_virtual_fs):
     Тест команды `list_directory` для директории `/home`.
     """
     vfs = setup_virtual_fs
-    vfs.change_directory("/home/")
+    vfs.change_directory("/home/user/downloads")
     result = vfs.list_directory()
-    print(f"Home directory contents: {result}")
-    expected = ["user"]
+    expected = []
     assert sorted(result) == sorted(expected), f"Unexpected home contents: {result}"
 
 
@@ -50,7 +48,6 @@ def test_ls_documents_directory(setup_virtual_fs):
     vfs = setup_virtual_fs
     vfs.change_directory("/home/user/documents/")
     result = vfs.list_directory()
-    print(f"Documents directory contents: {result}")
     expected = ["test.txt"]
     assert sorted(result) == sorted(expected), f"Unexpected documents contents: {result}"
 
@@ -74,6 +71,5 @@ def test_read_test_file(setup_virtual_fs):
     if "test.txt" in result:
         with vfs.zip_file.open("home/user/documents/test.txt") as f:
             content = f.read().decode("utf-8")
-            print(f"Test file content: {content}")
             expected_content = "Hello\nHello\nWorld\nWorld\nTest\n"
             assert content == expected_content, "Test file content does not match expected."

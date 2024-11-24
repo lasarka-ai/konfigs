@@ -73,23 +73,41 @@ def main():
         
         # Запускаем визуализатор, если указан путь
         if args.viz_path and args.output:
-            print(f"\nRunning visualizer from: {args.viz_path}")
+            print(f"\nRunning visualizer...")
             try:
-                process = subprocess.Popen(
-                    [args.viz_path, args.output],
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE
-                )
+                # Проверяем, заканчивается ли путь на .jar
+                if args.viz_path.endswith('.jar'):
+                    process = subprocess.Popen(
+                        ['java', '-jar', args.viz_path, args.output],
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE
+                    )
+                else:
+                    # Если не jar файл, запускаем как обычную программу
+                    process = subprocess.Popen(
+                        [args.viz_path, args.output],
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE
+                    )
+                    
                 stdout, stderr = process.communicate()
                 if process.returncode != 0:
                     print(f"Visualization error: {stderr.decode()}")
                 else:
                     print("Visualization completed successfully")
+                    # Если создался PNG файл, выводим его путь
+                    png_path = args.output.rsplit('.', 1)[0] + '.png'
+                    if os.path.exists(png_path):
+                        print(f"Generated image: {png_path}")
             except Exception as e:
                 print(f"Error running visualizer: {str(e)}")
+
                 
+
+
+
         return 0
-        
+
     except Exception as e:
         print(f"\nError during execution: {str(e)}")
         return 1

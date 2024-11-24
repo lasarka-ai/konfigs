@@ -1,3 +1,2 @@
 1 - python main.py --hostname "mycomputer" --fs-archive "test_filesystem.zip" --log-file "shell_session.json" --startup-script "startup.sh"
-2 - python src/main.py --repo-path "C:\Users\User\Documents\GitHub\konfigs" --date 2024-11-19 
---output "graph.puml" --viz-path "C:\Users\User\Downloads\plantuml-jar-gplv2-1.2023.7/plantuml.jar"
+2 - python src/main.py --repo-path "C:\Users\User\Documents\GitHub\test" --date 2024-11-25 --output "graph.puml" --viz-path "C:\Users\User\Downloads\plantuml-jar-gplv2-1.2023.7/plantuml.jar"

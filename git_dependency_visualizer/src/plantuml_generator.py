@@ -11,7 +11,7 @@ class PlantUMLGenerator:
         plantuml_code.extend([
             "skinparam roundcorner 20",
             "skinparam componentStyle uml2",
-            "skinparam backgroundColor transparent",
+            "skinparam backgroundColor White",
             "",
             "' Стили для коммитов",
             "skinparam component {",

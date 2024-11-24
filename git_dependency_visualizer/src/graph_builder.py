@@ -10,7 +10,13 @@ class GraphBuilder:
             'commit_nodes': set()  # Только узлы коммитов
         }
         
-        for commit in commits_data:
+        # Сортируем коммиты по дате для правильного построения зависимостей
+        sorted_commits = sorted(commits_data, key=lambda x: x['date'])
+        
+        # Словарь для хранения файлов и их последних коммитов
+        file_last_commit = {}
+        
+        for commit in sorted_commits:
             commit_hash = commit['hash']
             graph['commit_nodes'].add(commit_hash)
             graph['nodes'].add(commit_hash)
@@ -21,6 +27,14 @@ class GraphBuilder:
                 graph['nodes'].add(file_path)
                 graph['edges'].add((commit_hash, file_path))
                 
+                # Добавляем транзитивную зависимость от предыдущего коммита,
+                # который изменял этот файл
+                if file_path in file_last_commit:
+                    graph['edges'].add((file_last_commit[file_path], commit_hash))
+                
+                # Обновляем последний коммит для файла
+                file_last_commit[file_path] = commit_hash
+                
                 # Добавляем связи с родительскими директориями
                 path_parts = file_path.split('/')
                 current_path = ""
@@ -30,8 +44,22 @@ class GraphBuilder:
                     current_path += part
                     graph['file_nodes'].add(current_path)
                     graph['nodes'].add(current_path)
-                    if not current_path:
-                        continue
-                    graph['edges'].add((current_path, file_path))
+                    if current_path:
+                        graph['edges'].add((current_path, file_path))
         
         return graph
+
+    def print_graph(self, graph: Dict[str, Set]) -> str:
+        """Выводит граф в виде текстового представления для отладки"""
+        result = []
+        result.append("Graph structure:")
+        result.append("\nNodes:")
+        for node in sorted(graph['nodes']):
+            node_type = "Commit" if node in graph['commit_nodes'] else "File"
+            result.append(f"  {node_type}: {node}")
+        
+        result.append("\nEdges:")
+        for edge in sorted(graph['edges']):
+            result.append(f"  {edge[0]} -> {edge[1]}")
+            
+        return "\n".join(result)

@@ -4,16 +4,13 @@ from collections import defaultdict
 class GraphBuilder:
     def build_graph(self, commits_data: List[Dict]) -> Dict[str, Set]:
         graph = {
-            'nodes': set(),  # Все узлы (коммиты и файлы)
-            'edges': set(),  # Связи между узлами
-            'file_nodes': set(),  # Только файловые узлы
-            'commit_nodes': set()  # Только узлы коммитов
+            'nodes': set(), 
+            'edges': set(), 
+            'file_nodes': set(),  
+            'commit_nodes': set() 
         }
         
-        # Сортируем коммиты по дате для правильного построения зависимостей
         sorted_commits = sorted(commits_data, key=lambda x: x['date'])
-        
-        # Словарь для хранения файлов и их последних коммитов
         file_last_commit = {}
         
         for commit in sorted_commits:
@@ -21,21 +18,16 @@ class GraphBuilder:
             graph['commit_nodes'].add(commit_hash)
             graph['nodes'].add(commit_hash)
             
-            # Добавляем связи между коммитом и файлами
             for file_path in commit['files']:
                 graph['file_nodes'].add(file_path)
                 graph['nodes'].add(file_path)
                 graph['edges'].add((commit_hash, file_path))
                 
-                # Добавляем транзитивную зависимость от предыдущего коммита,
-                # который изменял этот файл
                 if file_path in file_last_commit:
                     graph['edges'].add((file_last_commit[file_path], commit_hash))
                 
-                # Обновляем последний коммит для файла
                 file_last_commit[file_path] = commit_hash
                 
-                # Добавляем связи с родительскими директориями
                 path_parts = file_path.split('/')
                 current_path = ""
                 for part in path_parts[:-1]:

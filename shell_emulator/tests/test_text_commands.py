@@ -20,7 +20,6 @@ def test_uniq_remove_duplicates(setup_virtual_fs):
     assert unique_lines == "Hello\nWorld\nTest"
 
 def test_uniq_empty_file(setup_virtual_fs):
-    # Create a virtual empty file for testing
     empty_content = ""
     assert empty_content == ""
 

@@ -31,7 +31,7 @@ def main():
         return 1
     
     try:
-        # Проверяем наличие .git директории
+
         git_dir = os.path.join(args.repo_path, '.git')
         if not os.path.exists(git_dir):
             print(f"Warning: .git directory not found at {git_dir}")
@@ -50,7 +50,6 @@ def main():
         graph_builder = GraphBuilder()
         dependency_graph = graph_builder.build_graph(commits_data)
         
-        # Выводим структуру графа для отладки
         print("\nGraph Structure:")
         print(graph_builder.print_graph(dependency_graph))
         
@@ -58,11 +57,9 @@ def main():
         plantuml_gen = PlantUMLGenerator()
         plantuml_code = plantuml_gen.generate(dependency_graph)
         
-        # Выводим код PlantUML на экран
         print("\nPlantUML Code:")
         print(plantuml_code)
         
-        # Сохраняем в файл, если указан путь
         if args.output:
             output_dir = os.path.dirname(os.path.abspath(args.output))
             os.makedirs(output_dir, exist_ok=True)
@@ -71,11 +68,9 @@ def main():
                 f.write(plantuml_code)
             print(f"\nCode has been saved to: {args.output}")
         
-        # Запускаем визуализатор, если указан путь
         if args.viz_path and args.output:
             print(f"\nRunning visualizer...")
             try:
-                # Проверяем, заканчивается ли путь на .jar
                 if args.viz_path.endswith('.jar'):
                     process = subprocess.Popen(
                         ['java', '-jar', args.viz_path, args.output],
@@ -83,7 +78,6 @@ def main():
                         stderr=subprocess.PIPE
                     )
                 else:
-                    # Если не jar файл, запускаем как обычную программу
                     process = subprocess.Popen(
                         [args.viz_path, args.output],
                         stdout=subprocess.PIPE,
@@ -95,7 +89,6 @@ def main():
                     print(f"Visualization error: {stderr.decode()}")
                 else:
                     print("Visualization completed successfully")
-                    # Если создался PNG файл, выводим его путь
                     png_path = args.output.rsplit('.', 1)[0] + '.png'
                     if os.path.exists(png_path):
                         print(f"Generated image: {png_path}")

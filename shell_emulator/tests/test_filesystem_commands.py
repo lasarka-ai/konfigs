@@ -7,16 +7,13 @@ def setup_virtual_fs():
     """
     Создаёт экземпляр VirtualFileSystem на основе архива test_filesystem.zip.
     """
-    # Указываем путь к существующему архиву
     archive_path = os.path.abspath("test_filesystem.zip")
 
-    # Убедимся, что файл существует
     if not os.path.isfile(archive_path):
         raise FileNotFoundError(f"Test archive {archive_path} not found. Run create_test_filesystem to generate it.")
 
-    # Создаём виртуальную файловую систему
     vfs = VirtualFileSystem(archive_path)
-    vfs.current_dir = "/"  # Устанавливаем текущую директорию на корень
+    vfs.current_dir = "/"
     return vfs
 
 

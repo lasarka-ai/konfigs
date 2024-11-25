@@ -14,15 +14,14 @@ class GitAnalyzer:
             print(f"Git directory: {self.repo.git_dir}")
             print(f"Working directory: {self.repo.working_dir}")
             
-            # Проверяем, является ли директория Git репозиторием
             if not self.repo.git_dir:
                 raise ValueError("Not a valid Git repository")
-                
-            # Выводим информацию о репозитории
+
+
             print(f"Active branch: {self.repo.active_branch.name}")
             print(f"Is bare repository: {self.repo.bare}")
             
-            # Проверяем наличие удаленных репозиториев
+
             remotes = list(self.repo.remotes)
             print(f"Remote repositories: {[r.name for r in remotes]}")
             
@@ -34,7 +33,6 @@ class GitAnalyzer:
         print(f"Analyzing commits before {date_limit}")
         
         try:
-            # Получаем все коммиты
             all_commits = list(self.repo.iter_commits())
             print(f"Total commits in repository: {len(all_commits)}")
             
@@ -76,12 +74,10 @@ class GitAnalyzer:
                         if diff_item.b_path and diff_item.b_path != diff_item.a_path:
                             changed_files.add(diff_item.b_path)
             else:
-                # Для первого коммита берем все файлы
                 for blob in commit.tree.traverse():
-                    if blob.type == 'blob':  # Только файлы, не директории
+                    if blob.type == 'blob':
                         changed_files.add(blob.path)
             
-            # Выводим найденные файлы
             if changed_files:
                 print(f"Files changed in commit {commit.hexsha[:7]}:")
                 for file in changed_files:

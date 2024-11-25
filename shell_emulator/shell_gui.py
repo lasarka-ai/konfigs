@@ -4,7 +4,7 @@ from PyQt5.QtGui import *
 from commands.filesystem_commands import LSCommand, CDCommand
 from commands.user_commands import WhoCommand, WhoamiCommand
 from commands.text_commands import UniqCommand
-import os  # Импортируем os вместо pwd
+import os
 
 class ShellGUI(QMainWindow):
     def __init__(self, hostname, filesystem, logger):
@@ -13,13 +13,11 @@ class ShellGUI(QMainWindow):
         self.fs = filesystem
         self.logger = logger
         
-        # Добавляем инициализацию текущей директории, если её нет
         if not hasattr(self.fs, 'current_dir'):
             self.fs.current_dir = os.path.expanduser('~')
         
         self.init_ui()
         
-        # Initialize commands
         self.commands = {
             'ls': LSCommand(self.fs, self.logger),
             'cd': CDCommand(self.fs, self.logger),
@@ -29,7 +27,6 @@ class ShellGUI(QMainWindow):
             'exit': self.close
         }
         
-        # Command history
         self.command_history = []
         self.history_index = -1
     
@@ -37,14 +34,11 @@ class ShellGUI(QMainWindow):
         self.setWindowTitle(f'Shell Emulator - {self.hostname}')
         self.setGeometry(100, 100, 800, 600)
         
-        # Create central widget
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
         
-        # Create layout
         layout = QVBoxLayout()
         
-        # Create output text area with improved styling
         self.output_area = QTextEdit()
         self.output_area.setReadOnly(True)
         self.output_area.setStyleSheet("""
@@ -55,7 +49,6 @@ class ShellGUI(QMainWindow):
             padding: 10px;
         """)
         
-        # Create input line with better styling
         self.input_line = QLineEdit()
         self.input_line.setStyleSheet("""
             background-color: #ffffff;
@@ -67,13 +60,11 @@ class ShellGUI(QMainWindow):
         """)
         self.input_line.returnPressed.connect(self.process_command)
         
-        # Add widgets to layout
         layout.addWidget(self.output_area)
         layout.addWidget(self.input_line)
         
         central_widget.setLayout(layout)
         
-        # Install event filter for input line
         self.input_line.installEventFilter(self)
         
         self.show_prompt()
@@ -86,7 +77,6 @@ class ShellGUI(QMainWindow):
         prompt = f'{self.hostname}:{current_dir}$ '
         self.output_area.append(prompt)
         
-        # Scroll to the bottom
         self.output_area.verticalScrollBar().setValue(
             self.output_area.verticalScrollBar().maximum()
         )
@@ -99,22 +89,18 @@ class ShellGUI(QMainWindow):
         self.input_line.clear()
         
         if command:
-            # Add to command history
             self.command_history.append(command)
             self.history_index = len(self.command_history)
             
-            # Display the entered command in the output area
             self.output_area.append(command)
             self.logger.log_command(command)
             
-            # Split the command into its name and arguments
             parts = command.split()
             cmd_name = parts[0]
             args = parts[1:]
             
             if cmd_name in self.commands:
                 try:
-                    # Execute the command and display its output
                     output = self.commands[cmd_name].execute(args)
                     if output:
                         self.output_area.append(output)
@@ -132,7 +118,6 @@ class ShellGUI(QMainWindow):
         if source == self.input_line and event.type() == QEvent.KeyPress:
             key = event.key()
             
-            # Command history navigation
             if key == Qt.Key_Up:
                 if 0 <= self.history_index - 1 < len(self.command_history):
                     self.history_index -= 1

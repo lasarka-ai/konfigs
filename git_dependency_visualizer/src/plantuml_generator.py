@@ -7,7 +7,7 @@ class PlantUMLGenerator:
             
         plantuml_code = ["@startuml"]
         
-        # Определяем стили
+        # Стили украл с форума какого-то
         plantuml_code.extend([
             "skinparam roundcorner 20",
             "skinparam componentStyle uml2",
@@ -33,12 +33,12 @@ class PlantUMLGenerator:
             ""
         ])
         
-        # Добавляем узлы коммитов с метками даты
+        # комиты
         for commit_hash in sorted(graph['commit_nodes']):
             short_hash = commit_hash[:7]
             plantuml_code.append(f'component "{short_hash}" as commit_{short_hash}')
         
-        # Добавляем узлы файлов и папок
+        # файлы/папки
         for file_path in sorted(graph['file_nodes']):
             safe_id = self._safe_id(file_path)
             if '/' in file_path or '\\' in file_path:
@@ -46,7 +46,7 @@ class PlantUMLGenerator:
             else:
                 plantuml_code.append(f'file "{file_path}" as {safe_id}')
         
-        # Добавляем связи
+        # связи
         for source, target in sorted(graph['edges']):
             source_id = f"commit_{source[:7]}" if source in graph['commit_nodes'] else self._safe_id(source)
             target_id = f"commit_{target[:7]}" if target in graph['commit_nodes'] else self._safe_id(target)

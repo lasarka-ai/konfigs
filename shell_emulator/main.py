@@ -1,4 +1,3 @@
-# main.py
 import argparse
 import sys
 from PyQt5.QtWidgets import QApplication
@@ -15,26 +14,20 @@ def parse_arguments():
     return parser.parse_args()
 
 def main():
-    # Создаем экземпляр QApplication
     app = QApplication(sys.argv)
     
     args = parse_arguments()
     
-    # Initialize virtual filesystem
     fs = VirtualFileSystem(args.fs_archive)
     
-    # Initialize logger
     logger = Logger(args.log_file)
     
-    # Create and start GUI
     shell = ShellGUI(args.hostname, fs, logger)
     if args.startup_script:
         shell.execute_startup_script(args.startup_script)
-    
-    # Показываем окно
+
     shell.show()
     
-    # Запускаем главный цикл приложения
     sys.exit(app.exec_())
 
 if __name__ == '__main__':

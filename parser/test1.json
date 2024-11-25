@@ -1,0 +1,16 @@
+{
+    "const": {
+      "base_value": 100,
+      "multiplier": 1.5
+    },
+    "config": {
+      "name": "example",
+      "enabled": true,
+      "threshold": 42,
+      "nested": {
+        "key": "value",
+        "number": 123
+      }
+    }
+  }
+  

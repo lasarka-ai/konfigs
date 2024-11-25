@@ -1,0 +1,28 @@
+{
+    "const": {
+      "base_value": 100,
+      "multiplier": 2.5,
+      "status": "active"
+    },
+    "config": {
+      "project": {
+        "comment": "/*\nСУпер крутой многострочный комментарий\n*/",
+        "name": "complex_test",
+        "version": 1,
+        "settings": {
+          "debug": true,
+          "max_retries": 3,
+          "nested_config": {
+            "timeout": 5000,
+            "enabled": false,
+            "paths": {
+              "input": "/data/input",
+              "output": "/data/output"
+            }
+          }
+        }
+      },
+      "calculated_value": "?(base_value) * ?(multiplier)",
+      "status_check": "?(status)"
+    }
+  }

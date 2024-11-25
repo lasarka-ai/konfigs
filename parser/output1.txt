@@ -1,0 +1,11 @@
+const base_value = 100
+const multiplier = 1.5
+$[
+ name : "example",
+ enabled : True,
+ threshold : 42,
+ nested : $[
+ key : "value",
+ number : 123
+]
+]

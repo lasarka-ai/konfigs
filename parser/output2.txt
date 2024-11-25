@@ -1,0 +1,26 @@
+const base_value = 100
+const multiplier = 2.5
+const status = "active"
+$[
+ project : $[
+ comment : "/*
+СУпер крутой многострочный комментарий
+*/",
+ name : "complex_test",
+ version : 1,
+ settings : $[
+ debug : True,
+ max_retries : 3,
+ nested_config : $[
+ timeout : 5000,
+ enabled : False,
+ paths : $[
+ input : "/data/input",
+ output : "/data/output"
+]
+]
+]
+],
+ calculated_value : "?(base_value) * ?(multiplier)",
+ status_check : "?(status)"
+]

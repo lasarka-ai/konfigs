@@ -7,9 +7,9 @@ from datetime import datetime
 from git import Repo
 import subprocess
 import gc
+import coverege
 import time
 
-# Добавляем путь к корневой директории проекта в PYTHONPATH
 current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(current_dir)
 sys.path.append(project_root)
@@ -38,18 +38,14 @@ class TestGitAnalyzer(unittest.TestCase):
         self.repo_path = os.path.join(self.test_dir, 'test_repo')
         os.makedirs(self.repo_path, exist_ok=True)
         
-        # Создаем тестовый репозиторий
         self.repo = Repo.init(self.repo_path)
         
-        # Настраиваем Git для коммитов
         with self.repo.config_writer() as config:
             config.set_value("user", "name", "Test User")
             config.set_value("user", "email", "test@example.com")
         
-        # Создаем тестовую структуру
         self._create_test_repository()
         
-        # Пути к выходным файлам
         self.output_dir = os.path.join(self.test_dir, 'output')
         os.makedirs(self.output_dir, exist_ok=True)
         self.output_puml = os.path.join(self.output_dir, 'graph.puml')
@@ -57,17 +53,12 @@ class TestGitAnalyzer(unittest.TestCase):
     def tearDown(self):
         """Очистка после каждого теста"""
         try:
-            # Закрываем все открытые файлы и ссылки на репозиторий
             if hasattr(self, 'repo'):
                 self.repo.close()
             
-            # Принудительно запускаем сборщик мусора
             gc.collect()
-            
-            # Даем системе время на освобождение файлов
             time.sleep(1)
             
-            # Очищаем текущую тестовую директорию
             if os.path.exists(self.test_dir):
                 shutil.rmtree(self.test_dir, onerror=self._handle_remove_readonly)
         except Exception as e:
@@ -77,13 +68,10 @@ class TestGitAnalyzer(unittest.TestCase):
     def tearDownClass(cls):
         """Очистка после всех тестов"""
         try:
-            # Принудительно запускаем сборщик мусора
+            # выпуск мусоровоза, т.к. ошибку сыпт мол я что то  почистил, хз может сработает. (P.S. Вроде сработало)
             gc.collect()
-            
-            # Даем системе время на освобождение файлов
             time.sleep(1)
             
-            # Пытаемся удалить базовую тестовую директорию
             if os.path.exists(cls.base_test_dir):
                 shutil.rmtree(cls.base_test_dir, onerror=cls._handle_remove_readonly)
         except Exception as e:
@@ -102,11 +90,11 @@ class TestGitAnalyzer(unittest.TestCase):
     def _create_test_repository(self):
         """Создаем тестовую структуру репозитория"""
         try:
-            # Создаем структуру директорий
+            #труктура директорий
             os.makedirs(os.path.join(self.repo_path, 'src'), exist_ok=True)
             os.makedirs(os.path.join(self.repo_path, 'tests'), exist_ok=True)
             
-            # Создаем и коммитим файлы
+            # коммитим файлы
             test_files = {
                 'src/main.py': 'print("Hello, World!")',
                 'src/utils.py': 'def greet(): return "Hello"',
@@ -163,7 +151,6 @@ class TestGitAnalyzer(unittest.TestCase):
     def test_full_pipeline_with_files(self):
         """Проверка полного процесса с генерацией файлов"""
         try:
-            # Создаем тестовые файлы локально
             analyzer = GitAnalyzer(self.repo_path)
             commits_data = analyzer.analyze_commits(datetime(2025, 1, 1))
             
@@ -173,16 +160,13 @@ class TestGitAnalyzer(unittest.TestCase):
             generator = PlantUMLGenerator()
             puml_code = generator.generate(graph)
             
-            # Сохраняем PUML файл
             os.makedirs(os.path.dirname(self.output_puml), exist_ok=True)
             with open(self.output_puml, 'w', encoding='utf-8') as f:
                 f.write(puml_code)
             
-            # Проверяем наличие PUML файла
             self.assertTrue(os.path.exists(self.output_puml), 
                         "PUML file was not generated")
             
-            # Проверяем содержимое PUML файла
             with open(self.output_puml, 'r', encoding='utf-8') as f:
                 content = f.read()
                 self.assertIn('@startuml', content)

@@ -17,7 +17,6 @@ class ShellGUI(QMainWindow):
             self.fs.current_dir = os.path.expanduser('~')
         
         self.init_ui()
-        
         self.commands = {
             'ls': LSCommand(self.fs, self.logger),
             'cd': CDCommand(self.fs, self.logger),

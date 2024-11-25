@@ -1,4 +1,3 @@
-ls
 cd /home
 cd user
 cd nonexistent_dir

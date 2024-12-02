@@ -18,7 +18,7 @@ class ConfigParser:
         elif isinstance(value, str):
             return f'"{value}"'
         elif isinstance(value, bool):
-            return str(int(value))  # true -> 1, false -> 0
+            return "1" if value else "0"
         else:
             raise ValueError(f"Неподдерживаемый тип значения: {type(value)}")
 
@@ -26,7 +26,7 @@ class ConfigParser:
         result = []
         result.append("$[")
         items = []
-        for key, value in data.items():
+        for key, value in sorted(data.items()):
             if not self.is_valid_name(key):
                 raise ValueError(f"Некорректное имя: {key}")
             items.append(f" {key} : {self.parse_value(value)}")
@@ -47,23 +47,24 @@ class ConfigParser:
 
     def parse_input(self, data):
         result = []
-        if isinstance(data, dict):
-            for key, value in data.items():
-                if key == "const":
-                    if isinstance(value, dict):
-                        for const_name, const_value in value.items():
-                            result.append(self.parse_const(const_name, const_value))
-                    else:
-                        raise ValueError("Поле 'const' должно быть словарем")
-                elif key == "config":
-                    if "comment" in value:
-                        result.append(f"/*\n{value['comment']}\n*/")
-                        del value["comment"]
-                    result.append(self.parse_dict(value))
-                else:
-                    raise ValueError(f"Неизвестный ключ верхнего уровня: {key}")
-        else:
+        if not isinstance(data, dict):
             raise ValueError("Ожидался JSON объект на верхнем уровне")
+
+        if "const" in data:
+            if not isinstance(data["const"], dict):
+                raise ValueError("Поле 'const' должно быть словарем")
+            for const_name, const_value in data["const"].items():
+                result.append(self.parse_const(const_name, const_value))
+
+        if "config" in data:
+            config = data["config"]
+            
+            if "comment" in config:
+                result.append(f"/*\n{config['comment']}\n*/")
+                del config["comment"]
+            
+            result.append(self.parse_dict(config))
+        
         return "\n".join(result)
 
 def main():
